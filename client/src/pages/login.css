@@ -1,0 +1,8 @@
+img-bg{
+    height: 100vh;
+    background-image: url('./nustBG.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    font-size: 24px;
+}

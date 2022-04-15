@@ -1,0 +1,28 @@
+
+
+.courses{
+    width: 500px;
+    height: 300px;
+    display: block;
+   
+}
+
+.course_container{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.outer_container{
+
+        border-radius: 12px;
+        
+}
+
+.topNavigation{
+    color: #FC766AFF;
+    position:fixed;
+    top:0;
+    width:100%;
+    z-index:100;
+    margin-left: 0;
+}
