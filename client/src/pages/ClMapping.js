@@ -61,7 +61,7 @@ function ClMapping() {
                 <div>
                     <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 250 ,fontFamily:"Josefin Sans",backgroundColor:"white"}} aria-label="simple table">
-                            <TableHead>
+                            <TableHead sx={{ backgroundColor: "darkgray" }}>
                                 <TableRow >
                                     <TableCell  align="right">Serial No</TableCell>
                                     <TableCell  align="center">Course Learning Outcome</TableCell>

@@ -73,7 +73,7 @@ export default function CourseCard() {
     color: 'white',
     border:"2px solid",
     backgroundColor:"black"
-  }} href={"/ClMapping"}>
+  }} href={"/Grading"}>
           Grading
         </Button>
         <Button size="small" sx={{
