@@ -1,143 +1,129 @@
-import React from "react";
-import './ClMapping.css'
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import TopNavigation from './TopNavigation';
+import React, { useEffect, useState } from "react";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
+import { Button, IconButton, Typography } from "@mui/material";
+import TopNavigation from "./TopNavigation";
 
+export default function AdminDashboard() {
+ 
+  const Clo = (props) => (
+    <TableRow>
+      <TableCell>{props.clo.name}</TableCell>
+      <TableCell>{props.clo.description}</TableCell>
+      <TableCell>{props.clo.course}</TableCell>
+      <TableCell>
+        <Stack direction="row" spacing={0} sx={{ justifyContent: "flex-end" }}>
+          <IconButton onClick={() => deleteCLO(props.clo)}>
+            <DeleteIcon></DeleteIcon>
+          </IconButton>
+        </Stack>
+      </TableCell>
+    </TableRow>
+  );
 
-let PLO;
+  const [clos, setClos] = useState([]);
 
-function createData(Serial, description, PLO, Bt) {
-    return { Serial, description, PLO, Bt };
-}
+  useEffect(() => {
+    async function getClos() {
+      const response = await fetch("http://localhost:1337/api/clo-list/");
 
-const rows = [
-    createData(1, " Understand the principles of Software Construction.", 6, 3),
-    createData(
-        2,
-        "Apply patterns, frameworks and techniques for Software Construction.",
-        262,
-        16.0
-    ),
-    createData(
-        3,
-        " Design and develop solutions based on Software Construction principles.",
-        262,
-        16.0
-    ),
-    createData(4, "C Use modern tools for software construction", 305, 3.7)
-];
+      if (!response.ok) {
+        const message = `An error occurred: ${response.statusText}`;
+        window.alert(message);
+        return;
+      }
 
+      const clos = await response.json();
+      setClos(clos);
+    }
+    getClos();
 
-function ClMapping() {
+    return;
+  }, []);
 
+  function cloList() {
+    return clos.map((clo) => {
+      return <Clo clo={clo} key={clo._id} />;
+    });
+  }
 
-    // mapPlo((preValue) => {
-    //     return {
-    //       ...preValue,
-    //       plo: selectedValues,
-    //     };
+  function createCLO() {
+    window.location.href = "/AddClo";
+  }
 
-
-    return (
-
-
-
-        <div style={{backgroundColor:"#EEEEE"}}>
-        
-            <Stack>
-            <TopNavigation />
-                <div style={{backgroundColor:"#212121"}}>
-                    <h1 style={{fontfamily:"Josefin Sans",color:"darkgray",marginLeft:20}}>Software Construction</h1>
-                </div>
-                <div>
-                    <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 250 ,fontFamily:"Josefin Sans",backgroundColor:"white"}} aria-label="simple table">
-                            <TableHead sx={{ backgroundColor: "darkgray" }}>
-                                <TableRow >
-                                    <TableCell  align="right">Serial No</TableCell>
-                                    <TableCell  align="center">Course Learning Outcome</TableCell>
-                                    <TableCell  align="center">PLO Mapping</TableCell>
-                                    <TableCell  align="center">BT Level</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {rows.map((row) => (
-                                    <TableRow
-                                        key={row.name}
-                                        sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                                    >
-
-                                        <TableCell  align="right">{row.Serial}</TableCell>
-                                        <TableCell  align="center">{row.description}</TableCell>
-                                        <TableCell  align="center">
-                                            <Select
-                                                labelId="PLO"
-                                                id="PLO"
-                                                value={PLO}
-                                                label="PLO"
-                                                // onChange={mapPlo}
-                                            >
-                                                <MenuItem value={1}>1</MenuItem>
-                                                <MenuItem value={2}>2</MenuItem>
-                                                <MenuItem value={3}>3</MenuItem>
-                                                <MenuItem value={4}>4</MenuItem>
-                                                <MenuItem value={5}>5</MenuItem>
-                                                <MenuItem value={6}>6</MenuItem>
-                                                <MenuItem value={7}>7</MenuItem>
-                                                <MenuItem value={8}>8</MenuItem>
-                                                <MenuItem value={9}>9</MenuItem>
-                                                <MenuItem value={10}>10</MenuItem>
-                                                <MenuItem value={11}>11</MenuItem>
-                                            </Select>
-
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            <TableCell align="center">
-                                                <Select
-                                                    labelId="BT"
-                                                    id="BT"
-                                                    value={PLO}
-                                                    label="BT"
-                                                >
-
-
-                                                    <MenuItem value={1}>C-1</MenuItem>
-                                                    <MenuItem value={2}>C-2</MenuItem>
-                                                    <MenuItem value={3}>C-3</MenuItem>
-                                                    <MenuItem value={4}>P-1</MenuItem>
-                                                    <MenuItem value={5}>P-2</MenuItem>
-                                                    <MenuItem value={6}>P-3</MenuItem>
-
-                                                </Select>
-
-                                            </TableCell>
-                                        </TableCell>
-
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </div>
-
-
-            </Stack>
-
-
-        </div>
-
-
-
+  async function deleteCLO(clo) {
+    const response = await fetch(
+      `http://localhost:4000/api/delete-clo/${clo._id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
     );
-}
 
-export default ClMapping;
+    if (response.ok) {
+      window.location.href = "/clos";
+    }
+  }
+
+  return (
+
+   
+    <Container>
+    
+      <Box
+        sx={{
+          mt: "0",
+          position:"sticky"
+        }}
+      >
+      <div style={{width:1150,backgroundColor:"#212121"}}>
+
+
+    
+      <TopNavigation />
+      <div style={{height:70}}>
+      <h1 style={{fontfamily:"Josefin Sans",color:"darkgray",marginLeft:20}}>Course Learning Outcome's</h1>
+
+      </div>
+      </div>
+        
+      </Box>
+      <div>
+      <Table sx={{ border: "1px" ,}}>
+        <TableHead sx={{ backgroundColor: "darkgray" }}>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell>Statement</TableCell>
+            <TableCell>Course</TableCell>
+            <TableCell align="right">Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>{cloList()}</TableBody>
+      </Table>
+      <Button
+          startIcon={<AddIcon></AddIcon>}
+            variant="contained"
+            align="right"
+            sx={{ backgroundColor: "darkgray", color: "black" }}
+          onClick={() => {
+            createCLO();
+          }}
+        >
+          Add CLO
+        </Button>
+        
+      </div>
+    </Container>
+  );
+}
